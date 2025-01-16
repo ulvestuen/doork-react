@@ -32,7 +32,7 @@ export function UserProfile(props: UserProfileProps): JSX.Element {
   const [isVerifying, setIsVerifying] = useState(false);
 
   useEffect(() => {
-    fetchUserData();
+    fetchUserData().then();
   }, []);
 
   const fetchUserData = async () => {
@@ -43,7 +43,9 @@ export function UserProfile(props: UserProfileProps): JSX.Element {
         },
       });
 
-      if (!response.ok) throw new Error("Failed to fetch user data");
+      if (!response.ok) {
+        throw new Error("Failed to fetch user data");
+      }
 
       const data = await response.json();
       setUserData(data);
@@ -57,7 +59,7 @@ export function UserProfile(props: UserProfileProps): JSX.Element {
 
   const handleSendVerification = async () => {
     try {
-      const response = await fetch(`${apiBaseUrl}/user/email/register`, {
+      const response = await fetch(`${apiBaseUrl}/user/email`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -84,11 +86,14 @@ export function UserProfile(props: UserProfileProps): JSX.Element {
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": "Bearer " + localStorage.getItem("__Secure-eniro.access_token"),
         },
         body: JSON.stringify({ email, code: verificationCode }),
       });
 
-      if (!response.ok) throw new Error("Failed to verify code");
+      if (!response.ok) {
+        throw new Error("Failed to verify code");
+      }
 
       toast.success("Email verified successfully");
       setIsVerifying(false);
