@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { AuthTabs, UserData, UserProfile } from '@ulvestuen/eniro-react';
-import { Toaster } from '../../src/components/ui/sonner';
-import { toast } from "sonner";
+import '@ulvestuen/eniro-react/dist/index.css';
+import { Toaster } from 'sonner';
+import { toast } from 'sonner';
 
 const App: React.FC = () => {
     const [userData, setUserData] = useState<UserData | null>(null);
