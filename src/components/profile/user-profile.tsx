@@ -39,7 +39,7 @@ export function UserProfile(props: UserProfileProps): JSX.Element {
     try {
       const response = await fetch(`${apiBaseUrl}/user`, {
         headers: {
-          "Authorization": "Bearer " + localStorage.getItem("__Secure-eniro.access_token"),
+          "Authorization": "Bearer " + localStorage.getItem("__Secure-doork.access_token"),
         },
       });
 
@@ -64,7 +64,7 @@ export function UserProfile(props: UserProfileProps): JSX.Element {
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer " + localStorage.getItem("__Secure-eniro.access_token"),
+          "Authorization": "Bearer " + localStorage.getItem("__Secure-doork.access_token"),
         },
         body: JSON.stringify({ email }),
       });
@@ -86,7 +86,7 @@ export function UserProfile(props: UserProfileProps): JSX.Element {
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer " + localStorage.getItem("__Secure-eniro.access_token"),
+          "Authorization": "Bearer " + localStorage.getItem("__Secure-doork.access_token"),
         },
         body: JSON.stringify({ email, code: verificationCode }),
       });

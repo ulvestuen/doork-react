@@ -93,7 +93,7 @@ export function SignInForm(props: SignInFormProps): JSX.Element {
       }
 
       const tokenResponse = await finishAuthResponse.json();
-      localStorage.setItem("__Secure-eniro.access_token", tokenResponse.access_token);
+      localStorage.setItem("__Secure-doork.access_token", tokenResponse.access_token);
 
       if (onAuthSuccess) {
         onAuthSuccess("Authentication successful");

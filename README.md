@@ -1,6 +1,6 @@
-# @ulvestuen/eniro-react
+# @ulvestuen/doork-react
 
-React components for Eniro authentication and user profile management. This library provides ready-to-use components for implementing passkey-based authentication and user profile management in your React applications.
+React components for Doork authentication and user profile management. This library provides ready-to-use components for implementing passkey-based authentication and user profile management in your React applications.
 
 ## Features
 
@@ -15,15 +15,15 @@ React components for Eniro authentication and user profile management. This libr
 ## Installation
 
 ```bash
-npm install @ulvestuen/eniro-react
+npm install @ulvestuen/doork-react
 # or
-yarn add @ulvestuen/eniro-react
+yarn add @ulvestuen/doork-react
 ```
 
 ## Usage
 
 ```tsx
-import { AuthTabs, UserProfile } from '@ulvestuen/eniro-react';
+import { AuthTabs, UserProfile } from '@ulvestuen/doork-react';
 
 // Configure your authentication settings
 const config = {

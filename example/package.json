@@ -1,12 +1,12 @@
 {
-  "name": "eniro-react-example",
+  "name": "doork-react-example",
   "version": "1.0.0",
   "private": true,
   "workspaces": [
     "../packages/*"
   ],
   "dependencies": {
-    "@ulvestuen/eniro-react": "file:..",
+    "@ulvestuen/doork-react": "file:..",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "sonner": "^1.7.2"

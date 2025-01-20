@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { AuthTabs, UserData, UserProfile } from '@ulvestuen/eniro-react';
-import '@ulvestuen/eniro-react/dist/index.css';
+import { AuthTabs, UserData, UserProfile } from '@ulvestuen/doork-react';
+import '@ulvestuen/doork-react/dist/index.css';
 import { Toaster } from 'sonner';
 import { toast } from 'sonner';
 
@@ -9,14 +9,14 @@ const App: React.FC = () => {
 
 
     useEffect(() => {
-        const token = localStorage.getItem("__Secure-eniro.access_token");
+        const token = localStorage.getItem("__Secure-doork.access_token");
         if (token) {
             fetchUserData(token);
         }
     }, []);
 
     const fetchUserData = (token: string) => {
-        fetch(`https://eniro.vercel.app/api/user`, {
+        fetch(`https://doork.vercel.app/api/user`, {
             headers: {
                 "Authorization": `Bearer ${token}`
             }
@@ -30,7 +30,7 @@ const App: React.FC = () => {
             .then(
                 data => setUserData(data),
                 error => {
-                    localStorage.removeItem("__Secure-eniro.access_token");
+                    localStorage.removeItem("__Secure-doork.access_token");
                     setUserData(null);
                 }
             );
@@ -41,24 +41,24 @@ const App: React.FC = () => {
         <div className="flex items-center justify-center min-h-screen h-screen w-screen">
             {userData
                 ? <UserProfile
-                    config={{ apiBaseUrl: "https://eniro.vercel.app/api" }}
+                    config={{ apiBaseUrl: "https://doork.vercel.app/api" }}
                     userData={userData}
                 />
                 : <div className="max-w-md w-full mx-auto px-4">
                     <AuthTabs
                         signInConfig={{
-                            apiBaseUrl: "https://eniro.vercel.app/api",
+                            apiBaseUrl: "https://doork.vercel.app/api",
                             onAuthError: (e: Error) => toast.error(e.message),
                             onAuthSuccess: (m: string) => {
                                 toast.success(m);
-                                const token = localStorage.getItem("__Secure-eniro.access_token");
+                                const token = localStorage.getItem("__Secure-doork.access_token");
                                 if (token) {
                                     fetchUserData(token);
                                 }
                             },
                         }}
                         signUpConfig={{
-                            apiBaseUrl: "https://eniro.vercel.app/api",
+                            apiBaseUrl: "https://doork.vercel.app/api",
                             onAuthError: (e: Error) => toast.error(e.message),
                             onAuthSuccess: (m: string) => toast.success(m),
                         }}

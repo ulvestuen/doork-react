@@ -1,7 +1,7 @@
 {
-  "name": "@ulvestuen/eniro-react",
+  "name": "@ulvestuen/doork-react",
   "version": "0.1.0",
-  "description": "React components for Eniro authentication and user profile management",
+  "description": "React components for Doork authentication and user profile management",
   "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -106,7 +106,7 @@
     "user-profile",
     "components",
     "typescript",
-    "eniro"
+    "doork"
   ],
   "author": "Idar Ulvestuen",
   "license": "MIT"
