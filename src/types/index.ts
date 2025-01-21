@@ -35,3 +35,12 @@ export interface UserProfileProps {
   className?: string;
   userData?: UserData;
 }
+
+export type Variant = "outline" | "default" | "destructive" | "secondary" | "ghost" | "link" | null | undefined
+
+export interface SignOutButtonProps {
+  onSignOut: () => void;
+  variant?: Variant;
+  className?: string;
+  children?: React.ReactNode;
+}

@@ -23,7 +23,7 @@ interface UserData {
 }
 
 export function UserProfile(props: UserProfileProps): JSX.Element {
-  const { config: { apiBaseUrl } } = props;
+  const { config: { apiBaseUrl }, className } = props;
 
   const [userData, setUserData] = useState<UserData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -110,7 +110,7 @@ export function UserProfile(props: UserProfileProps): JSX.Element {
 
   return (
     <>
-      <Card>
+      <Card className={className}>
         <CardHeader className="flex flex-row items-center gap-4">
           <Avatar className="h-16 w-16">
             <AvatarFallback className="text-lg">

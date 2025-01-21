@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { AuthTabs, UserData, UserProfile } from '@ulvestuen/doork-react';
+import { AuthTabs, UserData, UserProfile, SignOutButton } from '@ulvestuen/doork-react';
 import '@ulvestuen/doork-react/dist/index.css';
 import { Toaster } from 'sonner';
 import { toast } from 'sonner';
@@ -36,14 +36,27 @@ const App: React.FC = () => {
             );
     }
 
+    const handleSignOut = () => {
+        window.location.href = "/";
+    };
+
 
     return (
         <div className="flex items-center justify-center min-h-screen h-screen w-screen">
             {userData
-                ? <UserProfile
-                    config={{ apiBaseUrl: "https://doork.vercel.app/api" }}
-                    userData={userData}
-                />
+                ?
+                <div className="flex flex-col w-1/2 items-center justify-center">
+                    <UserProfile
+                        config={{ apiBaseUrl: "https://doork.vercel.app/api" }}
+                        userData={userData}
+                        className="w-full"
+                    />
+                    <div className="flex flex-col w-full mt-4 items-end justify-center">
+                        <SignOutButton onSignOut={handleSignOut}>
+                            Sign Out
+                        </SignOutButton>
+                    </div>
+                </div>
                 : <div className="max-w-md w-full mx-auto px-4">
                     <AuthTabs
                         signInConfig={{
