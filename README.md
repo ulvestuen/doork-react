@@ -1,71 +1,71 @@
 # @ulvestuen/doork-react
 
-React components for Doork authentication and user profile management. This library provides ready-to-use components for implementing passkey-based authentication and user profile management in your React applications.
+React components for Doork authentication and user profile management. This library provides ready-to-use components for implementing passkey-based authentication (WebAuthn) in your React applications.
 
 ## Features
 
 - Passkey-based authentication (WebAuthn)
 - Sign in and sign up forms
-- User profile management
-- Email verification
-- Customizable theming
+- User profile management with email verification
+- Modern UI built with shadcn/ui components
 - TypeScript support
-- Modern UI with Tailwind CSS
+- Customizable theming with Tailwind CSS
 
 ## Installation
 
 ```bash
 npm install @ulvestuen/doork-react
-# or
-yarn add @ulvestuen/doork-react
 ```
 
 ## Usage
 
 ```tsx
-import { AuthTabs, UserProfile } from '@ulvestuen/doork-react';
-
-// Configure your authentication settings
-const config = {
-  apiBaseUrl: 'https://your-api.com',
-  onAuthSuccess: (token) => {
-    // Handle successful authentication
-    console.log('Authentication successful:', token);
-  },
-  onAuthError: (error) => {
-    // Handle authentication errors
-    console.error('Authentication error:', error);
-  },
-  onEmailVerified: () => {
-    // Handle email verification success
-    console.log('Email verified successfully');
-  },
-};
-
-// Optional theme customization
-const theme = {
-  primary: '#0091ff',
-  secondary: '#6366f1',
-  background: '#ffffff',
-  text: '#000000',
-  error: '#ef4444',
-};
+import { AuthTabs, UserProfile, SignOutButton } from '@ulvestuen/doork-react';
+import '@ulvestuen/doork-react/dist/index.css';
 
 function App() {
+  const apiBaseUrl = import.meta.env.DOORK_API_BASE_URL || "https://doork.vercel.app/api";
+  const [userData, setUserData] = useState(null);
+
+  const handleSignOut = () => {
+    window.location.href = "/";
+  };
+
   return (
     <div>
-      {/* Authentication Component */}
-      <AuthTabs 
-        config={config}
-        theme={theme}
-        defaultTab="signin"
-      />
-
-      {/* User Profile Component */}
-      <UserProfile 
-        config={config}
-        theme={theme}
-      />
+      {userData ? (
+        <div>
+          <UserProfile 
+            config={{ apiBaseUrl }}
+            userData={userData}
+          />
+          <SignOutButton onSignOut={handleSignOut}>
+            Sign Out
+          </SignOutButton>
+        </div>
+      ) : (
+        <AuthTabs 
+          signInConfig={{
+            apiBaseUrl,
+            onAuthSuccess: (message) => {
+              // Handle successful authentication
+            },
+            onAuthError: (error) => {
+              // Handle authentication errors
+            },
+          }}
+          signUpConfig={{
+            apiBaseUrl,
+            onAuthSuccess: (message) => {
+              // Handle successful registration
+            },
+            onAuthError: (error) => {
+              // Handle registration errors
+            },
+          }}
+          defaultTab="signin"
+        />
+      )}
     </div>
   );
 }
@@ -74,49 +74,44 @@ function App() {
 ## Components
 
 ### AuthTabs
-
-A tabbed interface that provides both sign-in and sign-up functionality using passkeys.
+A tabbed interface for sign-in and sign-up functionality using passkeys.
 
 Props:
-- `config`: AuthConfig (required)
-- `theme`: Theme (optional)
-- `className`: string (optional)
-- `defaultTab`: 'signin' | 'signup' (optional)
+- `signInConfig`: AuthConfig
+- `signUpConfig`: AuthConfig
+- `className?`: string
+- `defaultTab?`: 'signin' | 'signup'
 
 ### UserProfile
-
-A component that displays user information and handles email verification.
+Displays user information and handles email verification.
 
 Props:
-- `config`: AuthConfig (required)
-- `theme`: Theme (optional)
-- `className`: string (optional)
-- `userData`: UserData (optional)
+- `config`: AuthConfig
+- `className?`: string
+- `userData?`: UserData
+
+### SignOutButton
+A button component that handles sign-out functionality.
+
+Props:
+- `onSignOut`: () => void
+- `variant?`: string
+- `className?`: string
+- `children?`: React.ReactNode
 
 ## Configuration
-
-The `AuthConfig` interface includes:
 
 ```typescript
 interface AuthConfig {
   apiBaseUrl: string;
-  onAuthSuccess?: (token: string) => void;
+  onAuthSuccess?: (message: string) => void;
   onAuthError?: (error: Error) => void;
-  onEmailVerified?: () => void;
 }
-```
 
-## Theme Customization
-
-The `Theme` interface allows you to customize the appearance:
-
-```typescript
-interface Theme {
-  primary?: string;
-  secondary?: string;
-  background?: string;
-  text?: string;
-  error?: string;
+interface UserData {
+  id: string;
+  username: string;
+  email?: string;
 }
 ```
 
@@ -124,8 +119,7 @@ interface Theme {
 
 1. Clone the repository
 2. Install dependencies: `npm install`
-3. Build the library: `npm run build`
-4. Run tests: `npm test`
+3. Run the example: `npm run dev`
 
 ## License
 

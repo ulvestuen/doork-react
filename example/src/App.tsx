@@ -1,32 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { AuthTabs, UserData, UserProfile, SignOutButton } from '@ulvestuen/doork-react';
 import '@ulvestuen/doork-react/dist/index.css';
-import { Toaster } from 'sonner';
-import { toast } from 'sonner';
+import { Toaster, toast } from 'sonner';
 
-const App: React.FC = () => {
+const App: React.FC<{ apiBaseUrl?: string }> = ({ apiBaseUrl }) => {
     const [userData, setUserData] = useState<UserData | null>(null);
-
+    apiBaseUrl = apiBaseUrl || "https://doork.vercel.app/api";
 
     useEffect(() => {
         const token = localStorage.getItem("__Secure-doork.access_token");
-        if (token) {
-            fetchUserData(token);
-        }
+        token && fetchUserData(token);
     }, []);
 
     const fetchUserData = (token: string) => {
-        fetch(`https://doork.vercel.app/api/user`, {
+        fetch(`${apiBaseUrl}/user`, {
             headers: {
                 "Authorization": `Bearer ${token}`
             }
         })
-            .then(res => {
-                if (res.ok) {
-                    return res.json();
-                }
-                return Promise.reject(new Error("Failed to fetch user data"));
-            })
+            .then(res => res.ok 
+                ? res.json() 
+                : Promise.reject(new Error("Failed to fetch user data")))
             .then(
                 data => setUserData(data),
                 error => {
@@ -47,7 +41,7 @@ const App: React.FC = () => {
                 ?
                 <div className="flex flex-col w-1/2 items-center justify-center">
                     <UserProfile
-                        config={{ apiBaseUrl: "https://doork.vercel.app/api" }}
+                        config={{ apiBaseUrl: apiBaseUrl }}
                         userData={userData}
                         className="w-full"
                     />
@@ -60,18 +54,16 @@ const App: React.FC = () => {
                 : <div className="max-w-md w-full mx-auto px-4">
                     <AuthTabs
                         signInConfig={{
-                            apiBaseUrl: "https://doork.vercel.app/api",
+                            apiBaseUrl: apiBaseUrl,
                             onAuthError: (e: Error) => toast.error(e.message),
                             onAuthSuccess: (m: string) => {
                                 toast.success(m);
                                 const token = localStorage.getItem("__Secure-doork.access_token");
-                                if (token) {
-                                    fetchUserData(token);
-                                }
+                                token && fetchUserData(token);
                             },
                         }}
                         signUpConfig={{
-                            apiBaseUrl: "https://doork.vercel.app/api",
+                            apiBaseUrl: apiBaseUrl,
                             onAuthError: (e: Error) => toast.error(e.message),
                             onAuthSuccess: (m: string) => toast.success(m),
                         }}
