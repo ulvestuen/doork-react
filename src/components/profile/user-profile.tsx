@@ -20,6 +20,7 @@ interface UserData {
   id: string;
   username: string;
   email?: string;
+  phone?: string;
 }
 
 export function UserProfile(props: UserProfileProps): JSX.Element {
@@ -28,8 +29,11 @@ export function UserProfile(props: UserProfileProps): JSX.Element {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [email, setEmail] = useState("");
-  const [verificationCode, setVerificationCode] = useState("");
-  const [isVerifying, setIsVerifying] = useState(false);
+  const [phone, setPhone] = useState("");
+  const [emailVerificationCode, setEmailVerificationCode] = useState("");
+  const [phoneVerificationCode, setPhoneVerificationCode] = useState("");
+  const [isVerifyingEmail, setIsVerifyingEmail] = useState(false);
+  const [isVerifyingPhone, setIsVerifyingPhone] = useState(false);
 
   useEffect(() => {
     fetchUserData().then();
@@ -71,11 +75,58 @@ export function UserProfile(props: UserProfileProps): JSX.Element {
 
       if (!response.ok) throw new Error("Failed to send verification email");
 
-      setIsVerifying(true);
+      setIsVerifyingEmail(true);
       toast.success("Verification code sent to your email");
     } catch (error) {
       console.error("Error sending verification email:", error);
       toast.error("Failed to send verification email");
+    }
+  };
+
+  const handleSendPhoneVerification = async () => {
+    try {
+      const response = await fetch(`${apiBaseUrl}/user/phone`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + localStorage.getItem("__Secure-doork.access_token"),
+        },
+        body: JSON.stringify({ phone_number: phone }),
+      });
+
+      if (!response.ok) throw new Error("Failed to send verification code");
+
+      setIsVerifyingPhone(true);
+      toast.success("Verification code sent to your phone number");
+    } catch (error) {
+      console.error("Error sending verification code:", error);
+      toast.error("Failed to send verification code");
+    }
+  };
+
+  const handleVerifyPhoneCode = async () => {
+    try {
+      const response = await fetch(`${apiBaseUrl}/user/phone/verify`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + localStorage.getItem("__Secure-doork.access_token"),
+        },
+        body: JSON.stringify({ phone_number: phone, code: phoneVerificationCode }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to verify code");
+      }
+
+      toast.success("Phone number verified successfully");
+      setIsVerifyingPhone(false);
+      fetchUserData(); // Refresh user data
+    } catch (error) {
+      console.error("Error verifying code:", error);
+      toast.error("Failed to verify code");
     }
   };
 
@@ -88,7 +139,7 @@ export function UserProfile(props: UserProfileProps): JSX.Element {
           "Content-Type": "application/json",
           "Authorization": "Bearer " + localStorage.getItem("__Secure-doork.access_token"),
         },
-        body: JSON.stringify({ email, code: verificationCode }),
+        body: JSON.stringify({ email, code: emailVerificationCode }),
       });
 
       if (!response.ok) {
@@ -96,7 +147,7 @@ export function UserProfile(props: UserProfileProps): JSX.Element {
       }
 
       toast.success("Email verified successfully");
-      setIsVerifying(false);
+      setIsVerifyingEmail(false);
       fetchUserData(); // Refresh user data
     } catch (error) {
       console.error("Error verifying code:", error);
@@ -143,7 +194,7 @@ export function UserProfile(props: UserProfileProps): JSX.Element {
                 </PopoverTrigger>
                 <PopoverContent className="w-80" align="end">
                   <div className="space-y-4">
-                    {!isVerifying ? (
+                    {!isVerifyingEmail ? (
                       <>
                         <h4 className="font-medium leading-none">Add Email Address</h4>
                         <div className="flex items-center gap-2">
@@ -163,8 +214,8 @@ export function UserProfile(props: UserProfileProps): JSX.Element {
                         <h4 className="font-medium leading-none">Add Email Address</h4>
                         <div className="flex items-center gap-2">
                           <InputOTP
-                            value={verificationCode}
-                            onChange={setVerificationCode}
+                            value={emailVerificationCode}
+                            onChange={setEmailVerificationCode}
                             maxLength={6}
                             pattern="[a-zA-Z0-9]"
                           >
@@ -178,6 +229,69 @@ export function UserProfile(props: UserProfileProps): JSX.Element {
                             </InputOTPGroup>
                           </InputOTP>
                           <Button onClick={handleVerifyCode} className="w-9 h-9 p-0">
+                            <ArrowRight className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </PopoverContent>
+              </Popover>
+            )}
+          </div>
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <h3 className="text-sm font-medium">Phone Number</h3>
+              {userData?.phone ? (
+                <p className="text-sm text-muted-foreground">{userData.phone}</p>
+              ) : (
+                <p className="text-sm text-muted-foreground">No phone number registered</p>
+              )}
+            </div>
+            {!userData?.phone && (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" size="icon">
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-80" align="end">
+                  <div className="space-y-4">
+                    {!isVerifyingPhone ? (
+                      <>
+                        <h4 className="font-medium leading-none">Add Phone Number</h4>
+                        <div className="flex items-center gap-2">
+                          <Input
+                            type="tel"
+                            placeholder="Enter your phone number"
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
+                          />
+                          <Button onClick={handleSendPhoneVerification} className="w-9 h-9 p-0">
+                            <Send className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <h4 className="font-medium leading-none">Add Phone Number</h4>
+                        <div className="flex items-center gap-2">
+                          <InputOTP
+                            value={phoneVerificationCode}
+                            onChange={setPhoneVerificationCode}
+                            maxLength={6}
+                            pattern="[a-zA-Z0-9]"
+                          >
+                            <InputOTPGroup>
+                              <InputOTPSlot index={0} />
+                              <InputOTPSlot index={1} />
+                              <InputOTPSlot index={2} />
+                              <InputOTPSlot index={3} />
+                              <InputOTPSlot index={4} />
+                              <InputOTPSlot index={5} />
+                            </InputOTPGroup>
+                          </InputOTP>
+                          <Button onClick={handleVerifyPhoneCode} className="w-9 h-9 p-0">
                             <ArrowRight className="h-4 w-4" />
                           </Button>
                         </div>

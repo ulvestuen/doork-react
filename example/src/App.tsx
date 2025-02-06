@@ -5,7 +5,7 @@ import { Toaster, toast } from 'sonner';
 
 const App: React.FC<{ apiBaseUrl?: string }> = ({ apiBaseUrl }) => {
     const [userData, setUserData] = useState<UserData | null>(null);
-    apiBaseUrl = apiBaseUrl || "https://doork.vercel.app/api";
+    apiBaseUrl = apiBaseUrl || "http://localhost:8080";
 
     useEffect(() => {
         const token = localStorage.getItem("__Secure-doork.access_token");
